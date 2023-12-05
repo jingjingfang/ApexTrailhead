@@ -30,11 +30,7 @@ trigger ClosedOpportunityTrigger on Opportunity (after insert, after update) {
     
     for(Opportunity opp: Trigger.new) {
         If(opp.StageName == 'Closed Won') {
-            Task followUpTask = new Task(
-                Subject = 'Follow Up Test Task',
-                WhatId = opp.Id
-          );
-                     
+            Task followUpTask = new Task(Subject = 'Follow Up Test Task',WhatId = opp.Id);  //Create the Task sObject  
             newTasks.add(followUpTask);
             
         }
@@ -62,3 +58,35 @@ trigger ClosedOpportunityTrigger on Opportunity(after insert, after update) {
     }
 }
 
+
+/*Create a method for inserting accounts.
+The Apex class must be called AccountHandler and be in the public scope
+The Apex class must have a public static method called insertNewAccount
+The method must accept an incoming string as a parameter, which will be used to create the Account name
+The method must insert the account into the system and then return the record
+The method must also accept an empty string, catch the failed DML and then return null*/
+
+public class AccountHandler {
+    public static Account insertNewAccount(String accName){
+        if(accName!=null) {
+            try {
+                // This causes an exception because 
+                //   the required Name field is not provided.
+                Account acct = new Account(Name=accName);
+                insert acct;
+                return acct;
+                
+            }
+            catch (DmlException e) {
+                System.debug('Account Not created');
+                             return null;                           
+                             
+                             }
+                             
+                             } else{
+                                 return null;
+                             }                          
+                                                  
+                             
+                             }
+}
